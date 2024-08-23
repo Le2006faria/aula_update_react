@@ -1,13 +1,33 @@
 // imports
 import { useState } from 'react';
 import './AtualizarPessoa.css';
+import PessoasRequests from "../../../fetch/PessoasRequests";
 import { useLocation } from 'react-router';
 import { formatarData } from '../../../util/Utilitario';
+import { useNavigate } from 'react-router';
+
 /**
  * Componente com o formulário para atualizar os dados do aluno
  */
 function AtualizarPessoa() {
+        // Função para atualizar os dados do aluno no banco de dados
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+        
+            // Executa a função atualizar e verifica se o retorno é true
+            if (await PessoasRequests.atualizarPessoa(pessoa)) {
+                // Exibe alerta de sucesso
+                alert(`${pessoa.nome} atualizado com sucesso!`); // Use crases aqui para interpolação
+                // Redireciona para a página de listagem
+                navegacao('/listagem', { replace: true });
+            } else {
+                // Exibe alerta de falha
+                alert('Erro ao atualizar informações');
+            }
+        };
+        
     // usado para pegar os dados da página anterior (as informações do usuário que foram passadas pela componente ListaPessoas.jsx)
+    const navegacao = useNavigate();
     const location = useLocation();
     const garrafa = location.state.garrafa;
     const [ pessoa, setPessoa ] = useState({
@@ -31,12 +51,7 @@ function AtualizarPessoa() {
             [name]: value
         }));
     }
-
-    // Função para atualizar os dados do aluno no banco de dados
-    const handleSubmit = async (e) => {
-        //enviar dados para API
-    }
-
+    
     return (
         <>
             <h1>Atualizar Pessoa</h1>
